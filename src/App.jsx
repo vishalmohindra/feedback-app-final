@@ -15,10 +15,14 @@ import './App.css';
 import './index.css';
 import FeedbackList from './Components/FeedBackList';
 
+// IMPORTANT: Vite fills this value automatically
+// It becomes "/feedback-app-final/" when deployed to GitHub Pages
+const basename = import.meta.env.BASE_URL || "/";
+
 function App() {
   return (
     <FeedbackProvider>
-      <Router basename="/feedback-app">
+      <Router basename={basename}>
         <Header />
         <div className="container">
           <Routes>
@@ -35,16 +39,19 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/post/*" element={<Post />} />
           </Routes>
+
           <Card>
             <div className="nav-links">
-            <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
-              Home
-            </NavLink>
-            <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>
-              About
-            </NavLink>
+              <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
+                Home
+              </NavLink>
+
+              <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>
+                About
+              </NavLink>
             </div>
           </Card>
+
           <AboutIconLink />
         </div>
       </Router>

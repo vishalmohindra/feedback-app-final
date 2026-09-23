@@ -60,3 +60,12 @@
   color: #333;
   padding-top: 0.2em;
 }
+.feedback-title {
+  font-size: 3rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.08em;
+  margin-top: 2rem;      /* space above */
+  margin-bottom:5.5rem; /* more space below title */
+}
+

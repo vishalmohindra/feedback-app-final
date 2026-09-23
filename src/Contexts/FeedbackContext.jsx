@@ -7,21 +7,25 @@ export const FeedbackProvider = ({ children }) => {
   const [feedback, setFeedback] = useState([]);
   const [feedbackEdit, setFeedbackEdit] = useState({ item: {}, edit: false });
 
+  // Base URL from Vite env (remove trailing slash if any)
+ 
+const BASE = (import.meta.env.VITE_BACKEND_URL || '').replace(/\/$/, '');
+
   useEffect(() => {
     fetchFeedback();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Fetch feedback items from backend
   const fetchFeedback = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/feedback'); // FIXED endpoint
+      const response = await fetch(`${BASE}/api/feedback`);
       if (!response.ok) {
         const text = await response.text();
         throw new Error(`Fetch failed: ${text}`);
       }
       const data = await response.json();
-      // Map MongoDB _id to id for React logic
       setFeedback(data.map(item => ({ ...item, id: item._id })));
     } catch (error) {
       console.error('Error fetching feedback:', error);
@@ -33,7 +37,7 @@ export const FeedbackProvider = ({ children }) => {
   // Add new feedback to backend and state
   const addFeedback = async (newFeedback) => {
     try {
-      const response = await fetch('http://localhost:5000/api/feedback', {
+      const response = await fetch(`${BASE}/api/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newFeedback),
@@ -43,7 +47,7 @@ export const FeedbackProvider = ({ children }) => {
         throw new Error(`Add feedback failed: ${text}`);
       }
       const data = await response.json();
-      setFeedback([{ ...data, id: data._id }, ...feedback]); // Map id here too
+      setFeedback([{ ...data, id: data._id }, ...feedback]);
     } catch (error) {
       console.error('Error adding feedback:', error);
     }
@@ -53,7 +57,7 @@ export const FeedbackProvider = ({ children }) => {
   const deleteFeedback = async (id) => {
     if (window.confirm('Are you sure you want to delete?')) {
       try {
-        const response = await fetch(`http://localhost:5000/api/feedback/${id}`, { method: 'DELETE' });
+        const response = await fetch(`${BASE}/api/feedback/${id}`, { method: 'DELETE' });
         if (!response.ok) {
           const text = await response.text();
           throw new Error(`Delete failed: ${text}`);
@@ -78,7 +82,7 @@ export const FeedbackProvider = ({ children }) => {
   // Update feedback by id in backend and state
   const updateFeedback = async (id, updItem) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/feedback/${id}`, {
+      const response = await fetch(`${BASE}/api/feedback/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updItem),
